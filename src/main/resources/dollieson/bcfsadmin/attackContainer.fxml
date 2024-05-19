@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="102.0" prefWidth="153.0" xmlns="http://javafx.com/javafx/20" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dollieson.bcfsadmin.AttackContainer">
+   <children>
+      <Label fx:id="lblName" layoutX="43.0" layoutY="14.0" text="Attack Name" />
+      <Label layoutX="22.0" layoutY="34.0" text="Power" />
+      <Label layoutX="105.0" layoutY="34.0" text="Speed" />
+      <Label layoutX="64.0" layoutY="61.0" text="Type" />
+      <Label fx:id="lblPower" layoutX="22.0" layoutY="61.0" text="10000" />
+      <Label fx:id="lblSpeed" layoutX="106.0" layoutY="61.0" text="10000" />
+      <Label fx:id="lblType" layoutX="30.0" layoutY="78.0" prefHeight="17.0" prefWidth="94.0" text="Hello World" textAlignment="CENTER" />
+   </children>
+</AnchorPane>

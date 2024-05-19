@@ -44,7 +44,10 @@ public class DBHelpers {
                 int Id = rs.getInt("attackID");
                 AttackModule AM = AttackModuleBuilder.buildAttackModule(attackModule);
                 Attack atk = new Attack(aName, aSpeed, aDamage, adamageMult, AM,Id);
+                atk.setAttackID(rs.getInt("attackID"));
+                atk.setIsDisabled(rs.getBoolean("isDisabled"));
                 allAttacks.put(Id, atk);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -175,7 +178,6 @@ public class DBHelpers {
                     invitorCockID = rs.getInt("invitorCockID");
                     break;
                 }
-
                 if(invitorCockID==-1){
                     System.out.println("An Error occured while getting the invitorCockID");
                     return false;
@@ -353,6 +355,19 @@ public class DBHelpers {
                 ps.setDouble(4,atk.getDamageMultiplier());
                 ps.setInt(5,AttackHelper.attackModuleToInt(atk.getAttackModule()));
                 res = ps.execute();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            return res;
+        }
+        public boolean toggleIsDisabled(int AttackID, boolean isDisabledState){
+            boolean res = false;
+            try(Connection c = dbConnection.getConnection();
+                PreparedStatement ps = c.prepareStatement("UPDATE tblattack SET isDisabled = ? WHERE attackID = ?")){
+                ps.setBoolean(1,isDisabledState);
+                ps.setInt(2,AttackID);
+                res = ps.execute();
+
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }

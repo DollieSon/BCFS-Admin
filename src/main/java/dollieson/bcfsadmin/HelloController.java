@@ -31,7 +31,7 @@ public class HelloController implements Initializable {
     public String choices[];
     public ScrollPane spContainer;
 
-    private int contcol = 4;
+    private int contcol = 5;
 
 
     @FXML
@@ -76,6 +76,8 @@ public class HelloController implements Initializable {
                 AttackContainer ac = fxmlLoader.getController();
                 int type = AttackHelper.attackModuleToInt(atk.getAttackModule());
                 ac.Setlabels(atk.getName(),String.valueOf(atk.getDamage()),String.valueOf(atk.getSpeed()),choices[type-1]);
+                ac.setToggle(atk.getAttackID(),atk.getIsDisabled());
+                ac.setParent(this);
                 gp.add(sc,num_atk%contcol,num_atk/contcol);
             } catch (IOException e) {
                 throw new RuntimeException(e);

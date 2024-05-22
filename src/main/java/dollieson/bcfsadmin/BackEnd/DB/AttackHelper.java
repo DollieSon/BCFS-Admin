@@ -1,7 +1,12 @@
-package dollieson.bcfsadmin.BackEnd.Attacks;
+package dollieson.bcfsadmin.BackEnd.DB;
 
-import dollieson.bcfsadmin.BackEnd.DB.DBHelpers;
-import dollieson.bcfsadmin.BackEnd.Globals.Attack;
+
+import dollieson.bcfsadmin.BackEnd.Attacks.AttackModule;
+import dollieson.bcfsadmin.BackEnd.Attacks.Heal;
+import dollieson.bcfsadmin.BackEnd.Attacks.Leech;
+import dollieson.bcfsadmin.BackEnd.Attacks.SingleAttack;
+import dollieson.bcfsadmin.BackEnd.Globals.DBHelpers;
+import dollieson.bcfsadmin.BackEnd.Main.Attack;
 
 import java.util.HashMap;
 

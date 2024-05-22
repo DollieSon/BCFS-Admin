@@ -1,11 +1,11 @@
-package dollieson.bcfsadmin.BackEnd.Globals;
+package dollieson.bcfsadmin.BackEnd.Main;
 
 
 import dollieson.bcfsadmin.BackEnd.Attacks.AttackModule;
 
 import java.util.Comparator;
 
-public class Attack {
+public class Attack implements Cloneable{
     private int AttackID;
     private String name;
     private int speed;
@@ -20,16 +20,15 @@ public class Attack {
         return isDisabled;
     }
 
-    public Attack setIsDisabled(boolean isDisabled) {
-        this.isDisabled = isDisabled;
-        return this;
-    }
-
     public Attack setAttackID(int attackID) {
         AttackID = attackID;
         return this;
     }
 
+    public Attack setIsDisabled(boolean isDisabled) {
+        this.isDisabled = isDisabled;
+        return this;
+    }
     public Attack(String name, int speed, int damage, double damageMultiplier, AttackModule attackModule) {
         this.name = name;
         this.speed = speed;
@@ -94,6 +93,18 @@ public class Attack {
         return this;
     }
 
+    @Override
+    public Attack clone() {
+        try {
+            Attack cloned = (Attack) super.clone();
+            cloned.attackModule = this.attackModule;
+            return cloned;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError("Cloning not supported", e);
+        }
+    }
+
+
     public static class sortBySpeed implements Comparator<Attack>{
         @Override
         public int compare(Attack o1, Attack o2) {
@@ -119,7 +130,6 @@ public class Attack {
     }
 
     public Attack setOwner(Cock owner) {
-        if(this.owner != null) throw new ClassCastException("Attack Already Has an Owner");
         this.owner = owner;
         return this;
     }

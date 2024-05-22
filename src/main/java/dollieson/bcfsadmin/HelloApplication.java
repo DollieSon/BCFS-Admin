@@ -1,7 +1,7 @@
 package dollieson.bcfsadmin;
 
-import dollieson.bcfsadmin.BackEnd.DB.DBHelpers;
 import dollieson.bcfsadmin.BackEnd.DB.LocalHostConnection;
+import dollieson.bcfsadmin.BackEnd.Globals.DBHelpers;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

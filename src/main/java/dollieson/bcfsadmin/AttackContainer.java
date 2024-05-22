@@ -1,6 +1,6 @@
 package dollieson.bcfsadmin;
 
-import dollieson.bcfsadmin.BackEnd.DB.DBHelpers;
+import dollieson.bcfsadmin.BackEnd.Globals.DBHelpers;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -46,6 +46,6 @@ public class AttackContainer {
     public void toggleAttack(){
         DBHelpers dbh = new DBHelpers(DBHelpers.getGlobalConnection());
         dbh.toggleIsDisabled(AttackID,!isDisabled);
-        parent.RepopulateTable();
+        parent.repopulateAttacktbl();
     }
 }

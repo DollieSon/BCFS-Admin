@@ -1,4 +1,4 @@
-package dollieson.bcfsadmin.BackEnd.Globals;
+package dollieson.bcfsadmin.BackEnd.Main;
 
 public class User {
     private String DisplayName;

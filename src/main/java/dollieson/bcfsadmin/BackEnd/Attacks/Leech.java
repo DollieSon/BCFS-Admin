@@ -1,8 +1,7 @@
 package dollieson.bcfsadmin.BackEnd.Attacks;
 
-
-import dollieson.bcfsadmin.BackEnd.Globals.Attack;
-import dollieson.bcfsadmin.BackEnd.Globals.Cock;
+import dollieson.bcfsadmin.BackEnd.Main.Attack;
+import dollieson.bcfsadmin.BackEnd.Main.Cock;
 
 public class Leech implements AttackModule{
 

@@ -1,23 +1,25 @@
 package dollieson.bcfsadmin;
 
-import dollieson.bcfsadmin.BackEnd.Attacks.AttackHelper;
 import dollieson.bcfsadmin.BackEnd.Attacks.AttackModule;
 import dollieson.bcfsadmin.BackEnd.Builders.AttackModuleBuilder;
-import dollieson.bcfsadmin.BackEnd.DB.DBHelpers;
-import dollieson.bcfsadmin.BackEnd.Globals.Attack;
+import dollieson.bcfsadmin.BackEnd.DB.AttackHelper;
+import dollieson.bcfsadmin.BackEnd.DB.LocalHostConnection;
+import dollieson.bcfsadmin.BackEnd.Globals.DBHelpers;
+import dollieson.bcfsadmin.BackEnd.Main.Attack;
+import dollieson.bcfsadmin.BackEnd.Main.Cock;
+import dollieson.bcfsadmin.BackEnd.Main.MatchFacade;
+import dollieson.bcfsadmin.BackEnd.Threading.MotherThreadController;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
@@ -30,6 +32,10 @@ public class HelloController implements Initializable {
     public Button btnSave;
     public String choices[];
     public ScrollPane spContainer;
+    public ScrollPane spUnverifiedTable;
+    public Label lblUnverCount;
+    public Button btnRefeshUnverified;
+    public Button btnVerifyBtls;
 
     private int contcol = 5;
 
@@ -45,7 +51,7 @@ public class HelloController implements Initializable {
         Attack atk = new Attack(Name,speed,damage,damageMult,AtkMod);
         DBHelpers dbh = new DBHelpers(DBHelpers.getGlobalConnection());
         dbh.sendAttack(atk);
-        RepopulateTable();
+        repopulateAttacktbl();
     }
 
     @Override
@@ -53,7 +59,8 @@ public class HelloController implements Initializable {
         choices = new String[]{"Single Attack","Leech","Heal"};
         cbAttackMod.setItems(FXCollections.observableArrayList(choices));
         cbAttackMod.getSelectionModel().select(0);
-        RepopulateTable();;
+        repopulateAttacktbl();;
+        repopulateUnverifiedTable();
     }
     public AttackModule getAttackMod(String ch){
         for(int x = 0;x<choices.length;x++){
@@ -63,7 +70,7 @@ public class HelloController implements Initializable {
         }
         return null;
     }
-    public void RepopulateTable(){
+    public void repopulateAttacktbl(){
         System.out.println("repopulating.....");
         GridPane gp = new GridPane();
         DBHelpers dbh = new DBHelpers(DBHelpers.getGlobalConnection());
@@ -86,4 +93,66 @@ public class HelloController implements Initializable {
         }
         spContainer.setContent(gp);
     }
+    public void repopulateUnverifiedTable(){
+        System.out.println("Getting Unverified Tables......");
+        GridPane gp =  new GridPane();
+        DBHelpers dbh = new DBHelpers(DBHelpers.getGlobalConnection());
+        HashMap<Integer, Cock> allC = dbh.getAllCockData();
+        System.out.println("All C Done");
+        HashMap<Integer,String> OwnerNames  = dbh.getAllDIsplayNames();
+        System.out.println("OwnerNames Done");
+        ArrayList<MatchFacade> MF = dbh.getAllUnverifiedMatches();
+        lblUnverCount.setText(String.format("%d Unverified Battles",MF.size()));
+        System.out.println("Unverified Done");
+        for(int y =0;y<MF.size();y++){
+            MatchFacade mf = MF.get(y);
+            int[] cocks = mf.getCcks();
+            Label fightNum = new Label(String.format("Fight ID. %d",mf.getMatchID()));
+            gp.add(fightNum,0,y);
+            try {
+                for(int x =0;x<cocks.length;x++){
+                    int cockID = cocks[x];
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("unverifiedFights.fxml"));
+                    Parent sc = fxmlLoader.load();
+                    unverifiedFightsController ufc = fxmlLoader.getController();
+                    ufc.setLabels(allC.get(cockID),OwnerNames);
+                    gp.add(sc,x+1,y);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        spUnverifiedTable.setContent(gp);
+    }
+
+
+    public void verifyAllMatch(){
+        DBHelpers.setGlobalConnection(new LocalHostConnection());
+        DBHelpers dbh = new DBHelpers(DBHelpers.getGlobalConnection());
+
+//        try(Connection C = DBHelpers.getGlobalConnection().getConnection()){
+//            Statement st = C.createStatement();
+//            st.execute("UPDATE tblmatch SET winner = 0 WHERE 1");
+//            Thread.sleep(1000);
+//        } catch (SQLException | InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+
+        ArrayList<MatchFacade> Matches = dbh.getAllUnverifiedMatches();
+        System.out.println("Done Getting Fights");
+        HashMap<Integer,Cock> allcocks = dbh.getAllCockData();
+        MotherThreadController MTC = new MotherThreadController(Matches,5);
+        Thread MotherThread = new Thread(MTC);
+        MotherThread.start();
+        while(MotherThread.isAlive()){
+            System.out.println("Mother is Looping");
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        repopulateUnverifiedTable();
+    }
+
 }

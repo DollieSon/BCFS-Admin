@@ -5,6 +5,7 @@ import dollieson.bcfsadmin.BackEnd.Builders.AttackModuleBuilder;
 import dollieson.bcfsadmin.BackEnd.DB.AttackHelper;
 import dollieson.bcfsadmin.BackEnd.DB.LocalHostConnection;
 import dollieson.bcfsadmin.BackEnd.Globals.DBHelpers;
+import dollieson.bcfsadmin.BackEnd.Globals.Helpers;
 import dollieson.bcfsadmin.BackEnd.Main.Attack;
 import dollieson.bcfsadmin.BackEnd.Main.Cock;
 import dollieson.bcfsadmin.BackEnd.Main.MatchFacade;
@@ -20,6 +21,7 @@ import javafx.scene.layout.GridPane;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.ResourceBundle;
 
@@ -36,6 +38,7 @@ public class HelloController implements Initializable {
     public Label lblUnverCount;
     public Button btnRefeshUnverified;
     public Button btnVerifyBtls;
+    public ScrollPane spAllversusAll;
 
     private int contcol = 5;
 
@@ -153,6 +156,37 @@ public class HelloController implements Initializable {
             }
         }
         repopulateUnverifiedTable();
+    }
+    public void activateAllVersusAll(){
+        DBHelpers dbh = new DBHelpers(DBHelpers.getGlobalConnection());
+        HashMap<Integer,Cock> allC = dbh.getAllCockData();
+        HashMap<Integer,String> allUser = dbh.getAllDIsplayNames();
+        HashMap<Integer,int[]> MatchResult = Helpers.allVersusAll(allC);
+        GridPane gp = new GridPane();
+        ArrayList<FightResultContainer> frc = new ArrayList<>();
+
+        for(int cockID : MatchResult.keySet()){
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("AvAres.fxml"));
+                Parent resultParent = fxmlLoader.load();
+                AvAres cont = fxmlLoader.getController();
+                Cock cock = allC.get(cockID);
+                String CockName = cock.getName();
+                String Owner = allUser.get(cock.getOwnerID());
+                int[] winloss = MatchResult.get(cockID);
+                cont.setLabels(CockName,Integer.toString(cockID),Owner,winloss);
+                FightResultContainer fightResultContainer = new FightResultContainer(resultParent,winloss,cockID);
+                frc.add(fightResultContainer);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        Collections.sort(frc,new FightResultContainer.Sort());
+        for(int x = 0 ;x<frc.size();x++){
+            FightResultContainer fightResultContainer = frc.get(x);
+            gp.add(fightResultContainer.getPrintable(),0,x);
+        }
+        spAllversusAll.setContent(gp);
     }
 
 }

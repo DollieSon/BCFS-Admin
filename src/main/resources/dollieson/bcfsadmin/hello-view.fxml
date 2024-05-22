@@ -60,8 +60,8 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <ScrollPane layoutX="328.0" layoutY="14.0" prefHeight="663.0" prefWidth="938.0" />
-                  <Button layoutX="20.0" layoutY="40.0" mnemonicParsing="false" text="Fight All" />
+                  <ScrollPane fx:id="spAllversusAll" layoutX="328.0" layoutY="14.0" prefHeight="663.0" prefWidth="938.0" />
+                  <Button layoutX="20.0" layoutY="40.0" mnemonicParsing="false" onAction="#activateAllVersusAll" text="Fight All" />
                </children></AnchorPane>
          </content>
       </Tab>

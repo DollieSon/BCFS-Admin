@@ -12,8 +12,10 @@ public class MotherThreadController implements Runnable{
     private int num_threads;
     private ArrayList<MatchThread> ChildThreads;
     private HashMap<Integer,Integer> ThreadResults;
+    private boolean isFinished;
 
     public MotherThreadController(ArrayList<MatchFacade> mfs, int threads){
+        isFinished = false;
         num_threads = threads;
         DBHelpers dbh = new DBHelpers(DBHelpers.getGlobalConnection());
         ChildThreads = new ArrayList<>();
@@ -28,6 +30,15 @@ public class MotherThreadController implements Runnable{
             ChildThreads.get(x%threads).addTask(mf);
         }
     }
+
+    public HashMap<Integer, Integer> getThreadResults() {
+        return ThreadResults;
+    }
+
+    public boolean isFinished() {
+        return isFinished;
+    }
+
     private void startMatches(){
         ArrayList<Thread> runs = new ArrayList<>();
         boolean isempty = true;
@@ -40,7 +51,6 @@ public class MotherThreadController implements Runnable{
             if(!mt.isempty()) isempty = false;
         }
         if(isempty) return;
-        boolean isFinished = false;
         do{
             isFinished = true;
             for(Thread run : runs){
@@ -59,9 +69,6 @@ public class MotherThreadController implements Runnable{
                 throw new RuntimeException(e);
             }
         }while (!isFinished);
-        //Batch Send Result
-        DBHelpers dbh = new DBHelpers(DBHelpers.getGlobalConnection());
-        dbh.batchSetWinner(ThreadResults);
     }
 
     @Override

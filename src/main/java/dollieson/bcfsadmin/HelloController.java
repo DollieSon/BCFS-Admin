@@ -3,7 +3,6 @@ package dollieson.bcfsadmin;
 import dollieson.bcfsadmin.BackEnd.Attacks.AttackModule;
 import dollieson.bcfsadmin.BackEnd.Builders.AttackModuleBuilder;
 import dollieson.bcfsadmin.BackEnd.DB.AttackHelper;
-import dollieson.bcfsadmin.BackEnd.DB.LocalHostConnection;
 import dollieson.bcfsadmin.BackEnd.Globals.DBHelpers;
 import dollieson.bcfsadmin.BackEnd.Globals.Helpers;
 import dollieson.bcfsadmin.BackEnd.Main.Attack;
@@ -130,7 +129,6 @@ public class HelloController implements Initializable {
 
 
     public void verifyAllMatch(){
-        DBHelpers.setGlobalConnection(new LocalHostConnection());
         DBHelpers dbh = new DBHelpers(DBHelpers.getGlobalConnection());
 
 //        try(Connection C = DBHelpers.getGlobalConnection().getConnection()){
@@ -155,6 +153,7 @@ public class HelloController implements Initializable {
                 throw new RuntimeException(e);
             }
         }
+        dbh.batchSetWinner(MTC.getThreadResults());
         repopulateUnverifiedTable();
     }
     public void activateAllVersusAll(){
@@ -184,7 +183,7 @@ public class HelloController implements Initializable {
         Collections.sort(frc,new FightResultContainer.Sort());
         for(int x = 0 ;x<frc.size();x++){
             FightResultContainer fightResultContainer = frc.get(x);
-            gp.add(fightResultContainer.getPrintable(),0,x);
+            gp.add(fightResultContainer.getPrintable(),x%3,x/3);
         }
         spAllversusAll.setContent(gp);
     }

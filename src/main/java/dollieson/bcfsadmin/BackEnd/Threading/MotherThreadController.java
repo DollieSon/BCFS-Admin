@@ -26,7 +26,7 @@ public class MotherThreadController implements Runnable{
         }
         for(int x=0;x<mfs.size();x++){
             MatchFacade mf = mfs.get(x);
-            System.out.println("Inserting Match: " + mf.getMatchID() );
+            //System.out.println("Inserting Match: " + mf.getMatchID() );
             ChildThreads.get(x%threads).addTask(mf);
         }
     }

@@ -38,6 +38,7 @@ public class HelloController implements Initializable {
     public Button btnRefeshUnverified;
     public Button btnVerifyBtls;
     public ScrollPane spAllversusAll;
+    public Label lblErr;
 
     private int contcol = 5;
 
@@ -53,6 +54,7 @@ public class HelloController implements Initializable {
         Attack atk = new Attack(Name,speed,damage,damageMult,AtkMod);
         DBHelpers dbh = new DBHelpers(DBHelpers.getGlobalConnection());
         dbh.sendAttack(atk);
+        lblErr.setText("Passed Successfully");
         repopulateAttacktbl();
     }
 
@@ -62,6 +64,7 @@ public class HelloController implements Initializable {
         cbAttackMod.setItems(FXCollections.observableArrayList(choices));
         cbAttackMod.getSelectionModel().select(0);
         repopulateAttacktbl();;
+        lblErr.setText("");
         repopulateUnverifiedTable();
     }
     public AttackModule getAttackMod(String ch){

@@ -13,7 +13,7 @@ public class LocalHostConnection implements DBConnection{
         Connection c = null;
         try{
             c= DriverManager.getConnection(URL, USERNAME,PASSSWORD);
-            System.out.println("DB Connection Success");
+            //System.out.println("DB Connection Success");
         }catch (SQLException e){
             e.printStackTrace();
         }
